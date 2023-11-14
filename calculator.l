@@ -18,7 +18,7 @@
 %%
 [0-9]+ {
     BEFORE_ACTION
-    yylval = atoi(yytext);
+    yylval.NUM = atoi(yytext);
     return NUM;
 }
 [\n]    { offset = 0; yylloc.last_column = 0; yylloc.last_line = 0; return *yytext; }

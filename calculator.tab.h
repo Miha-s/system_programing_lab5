@@ -55,35 +55,33 @@ extern int yydebug;
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
     NUM = 258,                     /* NUM  */
-    NEG = 259                      /* NEG  */
+    VAR = 259,                     /* VAR  */
+    FUN = 260,                     /* FUN  */
+    NEG = 261                      /* NEG  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef double YYSTYPE;
+union YYSTYPE
+{
+  char* VAR;                               /* VAR  */
+  char* FUN;                               /* FUN  */
+  double NUM;                              /* NUM  */
+  double exp;                              /* exp  */
+
+#line 75 "calculator.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
-/* Location type.  */
-#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
-typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE
-{
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
-};
-# define YYLTYPE_IS_DECLARED 1
-# define YYLTYPE_IS_TRIVIAL 1
-#endif
-
 
 extern YYSTYPE yylval;
-extern YYLTYPE yylloc;
+
 
 int yyparse (void);
 

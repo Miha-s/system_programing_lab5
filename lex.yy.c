@@ -738,7 +738,7 @@ YY_RULE_SETUP
 #line 19 "calculator.l"
 {
     BEFORE_ACTION
-    yylval = atoi(yytext);
+    yylval.NUM = atoi(yytext);
     return NUM;
 }
 	YY_BREAK
@@ -746,7 +746,7 @@ case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
 #line 24 "calculator.l"
-{ offset = 0; yylloc.last_column = 0; yylloc.last_line = 0; yylloc.last_line++; return *yytext; }
+{ offset = 0; yylloc.last_column = 0; yylloc.last_line = 0; return *yytext; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
