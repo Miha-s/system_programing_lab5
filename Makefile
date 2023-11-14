@@ -1,11 +1,14 @@
-syntax: parser.y
-	yacc -d parser.y
+syntax: calculator.y
+	bison -H calculator.y
 
-lexer: parser.l
-	lex parser.l
+lexer: calculator.l
+	lex calculator.l
 
-parser: syntax lexer
-	gcc lex.yy.c y.tab.c -oparser -Wno-format-security -Wno-format-overflow
+calculator: syntax lexer
+	gcc lex.yy.c calculator.tab.c -ocalculator -lm
 
 run_test:
-	cat test_input | ./parser
+	cat test_input | ./calculator
+
+clean:
+	rm y.tab.c y.tab.h lex.yy.c calculator.tab.c calculator.tab.h
