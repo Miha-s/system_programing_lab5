@@ -1,14 +1,15 @@
 %{
-  #include <stdio.h>  /* For printf, etc. */
-  #include <math.h>   /* For pow, used in the grammar. */
-  #include "utils.h"   /* Contains definition of 'symrec'. */
+  #include <stdio.h> 
+  #include <math.h>   
+  #include "utils.h" 
   int yylex (void);
   void yyerror (char const *);
 %}
 
+%locations
 %define api.value.type union /* Generate YYSTYPE from these types: */
 %token <double>  NUM     /* Double precision number. */
-%token <char*> VAR FUN /* Symbol table pointer: variable/function. */
+%token <char*> VAR LOG SIN COS
 %nterm <double>  exp
 
 %precedence '='
@@ -33,8 +34,34 @@ line:
 
 exp:
   NUM
-| VAR                { /*$$ = $1->value.var;           */   }
-| VAR '=' exp        { /*$$ = $3; $1->value.var = $3; */    }
+| VAR                
+{ 
+  variable_node* var = get_variable($1);
+  if(var == NULL) {
+    yyerror("Referencing undefined variable");
+    YYERROR;
+  }
+
+  $$ = var->value;
+}
+| VAR '=' exp        { $$ = $3; add_variable($1, $3);    }
+| LOG '(' exp ')'
+{ 
+  if($3 <= 0) {
+    yyerror("Non positive number to logarithm");
+    YYERROR;
+  }
+
+  $$ = log($3);
+}
+| SIN '(' exp ')'
+{
+  $$ = sin($3);
+}
+| COS '(' exp ')'
+{
+  $$ = cos($3);
+}
 | exp '+' exp        { $$ = $1 + $3;                    }
 | exp '-' exp        { $$ = $1 - $3;                    }
 | exp '*' exp        { $$ = $1 * $3;                    }
@@ -54,6 +81,6 @@ void yyerror (char const *s)
 
 int main (int argc, char const* argv[])
 {
-  /* Enable parse traces on option -p. */
+  init_variable_table();
   return yyparse ();
 }

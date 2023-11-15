@@ -4,11 +4,11 @@ syntax: calculator.y
 lexer: calculator.l
 	lex calculator.l
 
-calculator: syntax lexer
-	gcc lex.yy.c calculator.tab.c -ocalculator -lm
+calculator: syntax lexer utils.c utils.h
+	gcc lex.yy.c calculator.tab.c utils.c -ocalculator -lm
 
 run_test:
 	cat test_input | ./calculator
 
 clean:
-	rm y.tab.c y.tab.h lex.yy.c calculator.tab.c calculator.tab.h
+	rm calculator lex.yy.c calculator.tab.c calculator.tab.h

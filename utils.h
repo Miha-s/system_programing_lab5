@@ -1,23 +1,16 @@
-/* Function type. */
-typedef double (func_t) (double);
 
-/* Data type for links in the chain of symbols. */
-struct symrec
+
+struct variable_node
 {
-  char *name;  /* name of symbol */
-  int type;    /* type of symbol: either VAR or FUN */
-  union
-  {
-    double var;    /* value of a VAR */
-    func_t *fun;   /* value of a FUN */
-  } value;
-  struct symrec *next;  /* link field */
+    const char* name;
+    double value;
+    struct variable_node* next;
 };
 
-typedef struct symrec symrec;
+typedef struct variable_node variable_node;
 
-/* The symbol table: a chain of 'struct symrec'. */
-extern symrec *sym_table;
+variable_node* get_variable(const char* name);
 
-symrec *putsym (char const *name, int sym_type);
-symrec *getsym (char const *name);
+void add_variable(const char* name, double value);
+
+void init_variable_table();
