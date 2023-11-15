@@ -22,19 +22,15 @@
     return NUM;
 }
 
-log {
-    yylval.LOG = strdup(yytext);
-    return LOG;
+[0-9]+.[0-9]+ {
+    BEFORE_ACTION
+    yylval.NUM = atof(yytext);
+    return NUM;
 }
 
-sin {
-    yylval.SIN = strdup(yytext);
-    return SIN;
-}
-
-cos {
-    yylval.COS = strdup(yytext);
-    return COS;
+log|sin|cos {
+    yylval.UNARY_FUNC = strdup(yytext);
+    return UNARY_FUNC;
 }
 
 [a-zA-Z]+ {

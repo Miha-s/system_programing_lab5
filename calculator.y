@@ -9,7 +9,7 @@
 %locations
 %define api.value.type union /* Generate YYSTYPE from these types: */
 %token <double>  NUM     /* Double precision number. */
-%token <char*> VAR LOG SIN COS
+%token <char*> VAR UNARY_FUNC
 %nterm <double>  exp
 
 %precedence '='
@@ -48,22 +48,11 @@ exp:
 
   $$ = var->value;
 }
-| LOG '(' exp ')'
+| UNARY_FUNC '(' exp ')' 
 { 
-  if($3 <= 0) {
-    yyerror("Non positive number to logarithm");
+  if(!process_unary_function($1, $3, &$$)) {
     YYERROR;
-  }
-
-  $$ = log($3);
-}
-| SIN '(' exp ')'
-{
-  $$ = sin($3);
-}
-| COS '(' exp ')'
-{
-  $$ = cos($3);
+  } 
 }
 | exp '+' exp        { $$ = $1 + $3;                    }
 | exp '-' exp        { $$ = $1 - $3;                    }

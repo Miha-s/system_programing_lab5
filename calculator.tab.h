@@ -56,10 +56,8 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     NUM = 258,                     /* NUM  */
     VAR = 259,                     /* VAR  */
-    LOG = 260,                     /* LOG  */
-    SIN = 261,                     /* SIN  */
-    COS = 262,                     /* COS  */
-    NEG = 263                      /* NEG  */
+    UNARY_FUNC = 260,              /* UNARY_FUNC  */
+    NEG = 261                      /* NEG  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -69,13 +67,11 @@ extern int yydebug;
 union YYSTYPE
 {
   char* VAR;                               /* VAR  */
-  char* LOG;                               /* LOG  */
-  char* SIN;                               /* SIN  */
-  char* COS;                               /* COS  */
+  char* UNARY_FUNC;                        /* UNARY_FUNC  */
   double NUM;                              /* NUM  */
   double exp;                              /* exp  */
 
-#line 79 "calculator.tab.h"
+#line 75 "calculator.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

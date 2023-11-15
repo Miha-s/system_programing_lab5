@@ -1,6 +1,8 @@
 #include "utils.h"
-#include "stdlib.h"
-#include "string.h"
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
 
 static variable_node* variable_table;
 
@@ -39,4 +41,26 @@ void add_variable(const char* name, double value)
 void init_variable_table() {
     variable_table = create_variable("z", 0);
     variable_table->next = NULL;
+}
+
+int process_unary_function(const char* func, double val, double* res) 
+{
+    double result = 0;
+
+    if(strcmp(func, "log") == 0) {
+        if(val < 0) {
+            printf("Non positive number to logarithm - %f", val);
+            return 0;
+        }
+        result = log(val);
+    } 
+    else if(strcmp(func, "sin") == 0) {
+        result = sin(val);
+    }
+    else if(strcmp(func, "cos") == 0) {
+        result == cos(val);
+    }
+
+    (*res) = result;
+    return 1;
 }
