@@ -29,8 +29,12 @@ input:
 line:
   '\n'
 | exp '\n'   { printf ("%.10g\n", $1); }
+| statement '\n'
 | error '\n' { yyerrok;                }
 ;
+
+statement:
+  VAR '=' exp { add_variable($1, $3);    }
 
 exp:
   NUM
@@ -44,7 +48,6 @@ exp:
 
   $$ = var->value;
 }
-| VAR '=' exp        { $$ = $3; add_variable($1, $3);    }
 | LOG '(' exp ')'
 { 
   if($3 <= 0) {
