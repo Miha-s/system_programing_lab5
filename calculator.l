@@ -28,7 +28,7 @@
     return NUM;
 }
 
-log|sin|cos {
+log|sin|cos|tan|abs {
     yylval.UNARY_FUNC = strdup(yytext);
     return UNARY_FUNC;
 }
@@ -39,7 +39,7 @@ log|sin|cos {
 }
 
 [\n]    { offset = 0; yylloc.last_column = 0; yylloc.last_line = 0; return *yytext; }
-[-+()=/*^] { BEFORE_ACTION return *yytext; }
+[-+()=/*^%] { BEFORE_ACTION return *yytext; }
 
 [ \t]   ;
 

@@ -14,7 +14,7 @@
 
 %precedence '='
 %left '-' '+'
-%left '*' '/'
+%left '*' '/' '%'
 %precedence NEG /* negation--unary minus */
 %right '^'      /* exponentiation */
 
@@ -58,6 +58,7 @@ exp:
 | exp '-' exp        { $$ = $1 - $3;                    }
 | exp '*' exp        { $$ = $1 * $3;                    }
 | exp '/' exp        { $$ = $1 / $3;                    }
+| exp '%' exp        { $$ = (int)$1 % (int)$3;          }
 | '-' exp  %prec NEG { $$ = -$2;                        }
 | exp '^' exp        { $$ = pow ($1, $3);               }
 | '(' exp ')'        { $$ = $2;                         }

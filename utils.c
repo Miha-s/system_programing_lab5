@@ -60,6 +60,12 @@ int process_unary_function(const char* func, double val, double* res)
     else if(strcmp(func, "cos") == 0) {
         result == cos(val);
     }
+    else if(strcmp(func, "tan") == 0) {
+        result = tan(val);
+    } 
+    else if(strcmp(func, "abs") == 0) {
+        result = val < 0 ? -val : val;
+    }
 
     (*res) = result;
     return 1;
