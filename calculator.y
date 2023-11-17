@@ -1,16 +1,19 @@
-%{
+%code top{
   #include <stdio.h> 
   #include <math.h>   
   #include "utils.h" 
+  #include "syntax_tree.h"
+
   int yylex (void);
   void yyerror (char const *);
-%}
+
+}
 
 %locations
-%define api.value.type union /* Generate YYSTYPE from these types: */
-%token <double>  NUM     /* Double precision number. */
-%token <char*> VAR UNARY_FUNC
-%nterm <double>  exp
+%define api.value.type { struct syntax_node* }
+%token NUM     /* Double precision number. */
+%token VAR UNARY_FUNC
+%nterm exp
 
 %precedence '='
 %left '-' '+'
@@ -28,40 +31,46 @@ input:
 
 line:
   '\n'
-| exp '\n'   { printf ("%.10g\n", $1); }
+| exp '\n'   { printf ("%.10g\n", $1->value); print_syntax_tree($1);}
 | statement '\n'
 | error '\n' { yyerrok;                }
 ;
 
 statement:
-  VAR '=' exp { add_variable($1, $3);    }
+  VAR '=' exp { add_variable($1->name, $3->value);    }
 
 exp:
-  NUM
+  NUM {
+    $$ = create_node_value("num", $1->value);
+    add_sub_node($$, $1);
+  }
 | VAR                
-{ 
-  variable_node* var = get_variable($1);
+{
+  variable_node* var = get_variable($1->name);
   if(var == NULL) {
     yyerror("Referencing undefined variable");
     YYERROR;
   }
-
-  $$ = var->value;
+  $$ = create_node("var");
+  add_sub_node($$, $1);
+  $$->value = var->value;
 }
 | UNARY_FUNC '(' exp ')' 
-{ 
-  if(!process_unary_function($1, $3, &$$)) {
+{
+  $$ = create_node_list_3("exp", $1, $2, $3);
+  add_sub_node($$, $4);
+  if(!process_unary_function($1->name, $3->value, &$$->value)) {
     YYERROR;
   } 
 }
-| exp '+' exp        { $$ = $1 + $3;                    }
-| exp '-' exp        { $$ = $1 - $3;                    }
-| exp '*' exp        { $$ = $1 * $3;                    }
-| exp '/' exp        { $$ = $1 / $3;                    }
-| exp '%' exp        { $$ = (int)$1 % (int)$3;          }
-| '-' exp  %prec NEG { $$ = -$2;                        }
-| exp '^' exp        { $$ = pow ($1, $3);               }
-| '(' exp ')'        { $$ = $2;                         }
+| exp '+' exp        { $$ = create_node_list_3("exp", $1, $2, $3); $$->value = $1->value + $3->value;}
+| exp '-' exp        { $$ = create_node_list_3("exp", $1, $2, $3); $$->value = $1->value - $3->value;}
+| exp '*' exp        { $$ = create_node_list_3("exp", $1, $2, $3); $$->value = $1->value * $3->value;}
+| exp '/' exp        { $$ = create_node_list_3("exp", $1, $2, $3); $$->value = $1->value / $3->value;}
+| exp '%' exp        { $$ = create_node_list_3("exp", $1, $2, $3); $$->value = (int)$1->value % (int)$3->value;}
+| '-' exp  %prec NEG { $$ = create_node_list_2("exp", $1, $2); $$->value = -$2->value;}
+| exp '^' exp        { $$ = create_node_list_3("exp", $1, $2, $3); $$->value = pow ($1->value, $3->value);}
+| '(' exp ')'        { $$ = create_node_list_3("exp", $1, $2, $3); $$->value = $2->value;}
 ;
 /* End of grammar. */
 %%

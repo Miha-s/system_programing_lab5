@@ -64,17 +64,7 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
-  char* VAR;                               /* VAR  */
-  char* UNARY_FUNC;                        /* UNARY_FUNC  */
-  double NUM;                              /* NUM  */
-  double exp;                              /* exp  */
-
-#line 75 "calculator.tab.h"
-
-};
-typedef union YYSTYPE YYSTYPE;
+typedef  struct syntax_node*  YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

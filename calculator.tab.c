@@ -63,19 +63,22 @@
 /* Pull parsers.  */
 #define YYPULL 1
 
-
-
-
-/* First part of user prologue.  */
+/* "%code top" blocks.  */
 #line 1 "calculator.y"
 
   #include <stdio.h> 
   #include <math.h>   
   #include "utils.h" 
+  #include "syntax_tree.h"
+
   int yylex (void);
   void yyerror (char const *);
 
+
 #line 79 "calculator.tab.c"
+
+
+
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -514,8 +517,8 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    25,    25,    26,    30,    31,    32,    33,    37,    40,
-      41,    51,    57,    58,    59,    60,    61,    62,    63,    64
+       0,    28,    28,    29,    33,    34,    35,    36,    40,    43,
+      47,    58,    66,    67,    68,    69,    70,    71,    72,    73
 };
 #endif
 
@@ -1211,97 +1214,109 @@ yyreduce:
   switch (yyn)
     {
   case 5: /* line: exp '\n'  */
-#line 31 "calculator.y"
-             { printf ("%.10g\n", (yyvsp[-1].exp)); }
-#line 1217 "calculator.tab.c"
+#line 34 "calculator.y"
+             { printf ("%.10g\n", yyvsp[-1]->value); print_syntax_tree(yyvsp[-1]);}
+#line 1220 "calculator.tab.c"
     break;
 
   case 7: /* line: error '\n'  */
-#line 33 "calculator.y"
+#line 36 "calculator.y"
              { yyerrok;                }
-#line 1223 "calculator.tab.c"
+#line 1226 "calculator.tab.c"
     break;
 
   case 8: /* statement: VAR '=' exp  */
-#line 37 "calculator.y"
-              { add_variable((yyvsp[-2].VAR), (yyvsp[0].exp));    }
-#line 1229 "calculator.tab.c"
+#line 40 "calculator.y"
+              { add_variable(yyvsp[-2]->name, yyvsp[0]->value);    }
+#line 1232 "calculator.tab.c"
+    break;
+
+  case 9: /* exp: NUM  */
+#line 43 "calculator.y"
+      {
+    yyval = create_node_value("num", yyvsp[0]->value);
+    add_sub_node(yyval, yyvsp[0]);
+  }
+#line 1241 "calculator.tab.c"
     break;
 
   case 10: /* exp: VAR  */
-#line 42 "calculator.y"
-{ 
-  variable_node* var = get_variable((yyvsp[0].VAR));
+#line 48 "calculator.y"
+{
+  variable_node* var = get_variable(yyvsp[0]->name);
   if(var == NULL) {
     yyerror("Referencing undefined variable");
     YYERROR;
   }
-
-  (yyval.exp) = var->value;
+  yyval = create_node("var");
+  add_sub_node(yyval, yyvsp[0]);
+  yyval->value = var->value;
 }
-#line 1243 "calculator.tab.c"
+#line 1256 "calculator.tab.c"
     break;
 
   case 11: /* exp: UNARY_FUNC '(' exp ')'  */
-#line 52 "calculator.y"
-{ 
-  if(!process_unary_function((yyvsp[-3].UNARY_FUNC), (yyvsp[-1].exp), &(yyval.exp))) {
+#line 59 "calculator.y"
+{
+  yyval = create_node_list_3("exp", yyvsp[-3], yyvsp[-2], yyvsp[-1]);
+  add_sub_node(yyval, yyvsp[0]);
+  if(!process_unary_function(yyvsp[-3]->name, yyvsp[-1]->value, &yyval->value)) {
     YYERROR;
   } 
 }
-#line 1253 "calculator.tab.c"
+#line 1268 "calculator.tab.c"
     break;
 
   case 12: /* exp: exp '+' exp  */
-#line 57 "calculator.y"
-                     { (yyval.exp) = (yyvsp[-2].exp) + (yyvsp[0].exp);                    }
-#line 1259 "calculator.tab.c"
+#line 66 "calculator.y"
+                     { yyval = create_node_list_3("exp", yyvsp[-2], yyvsp[-1], yyvsp[0]); yyval->value = yyvsp[-2]->value + yyvsp[0]->value;}
+#line 1274 "calculator.tab.c"
     break;
 
   case 13: /* exp: exp '-' exp  */
-#line 58 "calculator.y"
-                     { (yyval.exp) = (yyvsp[-2].exp) - (yyvsp[0].exp);                    }
-#line 1265 "calculator.tab.c"
+#line 67 "calculator.y"
+                     { yyval = create_node_list_3("exp", yyvsp[-2], yyvsp[-1], yyvsp[0]); yyval->value = yyvsp[-2]->value - yyvsp[0]->value;}
+#line 1280 "calculator.tab.c"
     break;
 
   case 14: /* exp: exp '*' exp  */
-#line 59 "calculator.y"
-                     { (yyval.exp) = (yyvsp[-2].exp) * (yyvsp[0].exp);                    }
-#line 1271 "calculator.tab.c"
+#line 68 "calculator.y"
+                     { yyval = create_node_list_3("exp", yyvsp[-2], yyvsp[-1], yyvsp[0]); yyval->value = yyvsp[-2]->value * yyvsp[0]->value;}
+#line 1286 "calculator.tab.c"
     break;
 
   case 15: /* exp: exp '/' exp  */
-#line 60 "calculator.y"
-                     { (yyval.exp) = (yyvsp[-2].exp) / (yyvsp[0].exp);                    }
-#line 1277 "calculator.tab.c"
+#line 69 "calculator.y"
+                     { yyval = create_node_list_3("exp", yyvsp[-2], yyvsp[-1], yyvsp[0]); yyval->value = yyvsp[-2]->value / yyvsp[0]->value;}
+#line 1292 "calculator.tab.c"
     break;
 
   case 16: /* exp: exp '%' exp  */
-#line 61 "calculator.y"
-                     { (yyval.exp) = (int)(yyvsp[-2].exp) % (int)(yyvsp[0].exp);          }
-#line 1283 "calculator.tab.c"
+#line 70 "calculator.y"
+                     { yyval = create_node_list_3("exp", yyvsp[-2], yyvsp[-1], yyvsp[0]); yyval->value = (int)yyvsp[-2]->value % (int)yyvsp[0]->value;}
+#line 1298 "calculator.tab.c"
     break;
 
   case 17: /* exp: '-' exp  */
-#line 62 "calculator.y"
-                     { (yyval.exp) = -(yyvsp[0].exp);                        }
-#line 1289 "calculator.tab.c"
+#line 71 "calculator.y"
+                     { yyval = create_node_list_2("exp", yyvsp[-1], yyvsp[0]); yyval->value = -yyvsp[0]->value;}
+#line 1304 "calculator.tab.c"
     break;
 
   case 18: /* exp: exp '^' exp  */
-#line 63 "calculator.y"
-                     { (yyval.exp) = pow ((yyvsp[-2].exp), (yyvsp[0].exp));               }
-#line 1295 "calculator.tab.c"
+#line 72 "calculator.y"
+                     { yyval = create_node_list_3("exp", yyvsp[-2], yyvsp[-1], yyvsp[0]); yyval->value = pow (yyvsp[-2]->value, yyvsp[0]->value);}
+#line 1310 "calculator.tab.c"
     break;
 
   case 19: /* exp: '(' exp ')'  */
-#line 64 "calculator.y"
-                     { (yyval.exp) = (yyvsp[-1].exp);                         }
-#line 1301 "calculator.tab.c"
+#line 73 "calculator.y"
+                     { yyval = create_node_list_3("exp", yyvsp[-2], yyvsp[-1], yyvsp[0]); yyval->value = yyvsp[-1]->value;}
+#line 1316 "calculator.tab.c"
     break;
 
 
-#line 1305 "calculator.tab.c"
+#line 1320 "calculator.tab.c"
 
       default: break;
     }
@@ -1499,7 +1514,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 67 "calculator.y"
+#line 76 "calculator.y"
 
 
 /* Called by yyparse on error. */

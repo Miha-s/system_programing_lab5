@@ -4,8 +4,8 @@ syntax: calculator.y
 lexer: calculator.l
 	lex calculator.l
 
-calculator: syntax lexer utils.c utils.h
-	gcc lex.yy.c calculator.tab.c utils.c -ocalculator -lm
+calculator: syntax lexer utils.c utils.h syntax_tree.c syntax_tree.h
+	gcc lex.yy.c calculator.tab.c utils.c syntax_tree.c -ocalculator -lm
 
 run_test:
 	cat test_input | ./calculator

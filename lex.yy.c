@@ -457,20 +457,14 @@ char *yytext;
 #line 2 "calculator.l"
     #include "calculator.tab.h"
     #include "string.h"
+    #include "syntax_tree.h"
     int yyerror (const char *);
 
     size_t offset;
-
-    #define YY_USER_ACTION         \
-    offset += yyleng;            \
-    yylloc.last_line = yylineno; \
-    yylloc.last_column = offset;
-
-    #define BEFORE_ACTION \
-    yylloc.first_line = yylloc.last_line; \
-    yylloc.first_column = yylloc.last_column;
-#line 473 "lex.yy.c"
-#line 474 "lex.yy.c"
+    #define ACTION_BEFORE \
+        yylval = create_node(strdup(yytext));
+#line 467 "lex.yy.c"
+#line 468 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -687,9 +681,9 @@ YY_DECL
 		}
 
 	{
-#line 18 "calculator.l"
+#line 12 "calculator.l"
 
-#line 693 "lex.yy.c"
+#line 687 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -748,65 +742,65 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 19 "calculator.l"
+#line 13 "calculator.l"
 {
-    BEFORE_ACTION
-    yylval.NUM = atoi(yytext);
+    ACTION_BEFORE
+    yylval->value = atoi(yytext);
     return NUM;
 }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 25 "calculator.l"
+#line 19 "calculator.l"
 {
-    BEFORE_ACTION
-    yylval.NUM = atof(yytext);
+    ACTION_BEFORE
+    yylval->value = atof(yytext);
     return NUM;
 }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 31 "calculator.l"
+#line 25 "calculator.l"
 {
-    yylval.UNARY_FUNC = strdup(yytext);
+    ACTION_BEFORE
     return UNARY_FUNC;
 }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 36 "calculator.l"
+#line 30 "calculator.l"
 {
-    yylval.VAR = strdup(yytext);
+    ACTION_BEFORE
     return VAR;
 }
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 41 "calculator.l"
-{ offset = 0; yylloc.last_column = 0; yylloc.last_line = 0; return *yytext; }
+#line 35 "calculator.l"
+{ ACTION_BEFORE; return *yytext; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 42 "calculator.l"
-{ BEFORE_ACTION return *yytext; }
+#line 36 "calculator.l"
+{ ACTION_BEFORE; return *yytext; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 44 "calculator.l"
+#line 38 "calculator.l"
 ;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 46 "calculator.l"
+#line 40 "calculator.l"
 yyerror("invalid character");
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 47 "calculator.l"
+#line 41 "calculator.l"
 ECHO;
 	YY_BREAK
-#line 810 "lex.yy.c"
+#line 804 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1811,12 +1805,9 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 47 "calculator.l"
+#line 41 "calculator.l"
 
 
 int yywrap(void) {
     return 1;
 }
-
-    char* copy_string(char* from, int size);
-
