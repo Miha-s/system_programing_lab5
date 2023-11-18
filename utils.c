@@ -23,6 +23,8 @@ variable_node* create_variable(const char* name, double value) {
     variable_node* new_node = malloc(sizeof(variable_node));
     new_node->name = name;
     new_node->value = value;
+
+    return new_node;
 }
 
 void add_variable(const char* name, double value)
@@ -58,7 +60,7 @@ int process_unary_function(const char* func, double val, double* res)
         result = sin(val);
     }
     else if(strcmp(func, "cos") == 0) {
-        result == cos(val);
+        result = cos(val);
     }
     else if(strcmp(func, "tan") == 0) {
         result = tan(val);
