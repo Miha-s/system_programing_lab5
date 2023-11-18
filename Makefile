@@ -7,8 +7,5 @@ lexer: calculator.l
 calculator: syntax lexer utils.c utils.h syntax_tree.c syntax_tree.h
 	gcc lex.yy.c calculator.tab.c utils.c syntax_tree.c -ocalculator -lm
 
-run_test:
-	cat test_input | ./calculator
-
 clean:
 	rm calculator lex.yy.c calculator.tab.c calculator.tab.h
