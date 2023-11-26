@@ -2,6 +2,7 @@
     #include "calculator.tab.h"
     #include "string.h"
     #include "syntax_tree.h"
+    #include "math.h"
     int yyerror (const char *);
 
     size_t offset;
@@ -16,9 +17,15 @@
     return NUM;
 }
 
-[0-9]+.[0-9]+ {
+[0-9]+\.[0-9]+ {
     ACTION_BEFORE
     yylval->value = atof(yytext);
+    return NUM;
+}
+
+pi {
+    ACTION_BEFORE
+    yylval->value = M_PI;
     return NUM;
 }
 

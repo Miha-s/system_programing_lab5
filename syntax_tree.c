@@ -51,18 +51,18 @@ syntax_node* create_node_list_2(const char* name, syntax_node* one, syntax_node*
 }
 
 
-void print_tree(syntax_node* node, char* ind, int is_last) 
+void print_tree(syntax_node* node, const char* ind, int is_last) 
 {
     char *indent = strdup(ind);
     int c = 0;
     printf("%s", indent);
 
     if(is_last) {
-        printf("└");
-        strcat(indent, "   ");
+        printf("└ ");
+        strcat(indent, "    ");
     } else {
         printf("|-");
-        strcat(indent, "|  ");
+        strcat(indent, "|   ");
     }
 
     printf(" %s\n", node->name);
@@ -79,9 +79,17 @@ void print_tree(syntax_node* node, char* ind, int is_last)
 void print_syntax_tree(syntax_node* node) 
 {
     printf("\n");
-    char indent[100];
-    indent[0] = 0;
-    print_tree(node, indent, 1);
+    const char* indent = " ";
+
+    printf("%s\n", node->name);
+
+    int c = 0;
+    while (node->next_elements[c] != NULL)
+    {
+        print_tree(node->next_elements[c], indent, node->next_elements[c+1] == NULL);
+        c++;
+    }
+    // print_tree(node, indent, 1);
 }
 
 

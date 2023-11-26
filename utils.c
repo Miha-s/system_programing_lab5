@@ -51,7 +51,7 @@ int process_unary_function(const char* func, double val, double* res)
 
     if(strcmp(func, "log") == 0) {
         if(val < 0) {
-            printf("Non positive number to logarithm - %f", val);
+            printf("Non positive number to logarithm - %f\n", val);
             return 0;
         }
         result = log(val);

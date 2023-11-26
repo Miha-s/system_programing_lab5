@@ -26,7 +26,7 @@
 %% /* The grammar follows. */
 input:
   %empty
-| input line
+| input line  { printf("> "); }
 ;
 
 line:
@@ -84,5 +84,6 @@ void yyerror (char const *s)
 int main (int argc, char const* argv[])
 {
   init_variable_table();
+  printf("> ");
   return yyparse ();
 }
