@@ -53,7 +53,8 @@ syntax_node* create_node_list_2(const char* name, syntax_node* one, syntax_node*
 
 void print_tree(syntax_node* node, const char* ind, int is_last) 
 {
-    char *indent = strdup(ind);
+    char *indent = malloc(sizeof(char) * ( strlen(ind) + 5));
+    strcpy(indent, ind);
     int c = 0;
     printf("%s", indent);
 
